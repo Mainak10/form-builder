@@ -1,5 +1,5 @@
 // src/pages/FillPage.tsx
-import { useReducer, useCallback, useRef } from 'react'
+import { useReducer, useCallback, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { useParams, Link } from 'react-router-dom'
 import { getTemplate, saveResponse } from '@/storage'
@@ -21,33 +21,38 @@ export default function FillPage() {
     return createInitialFillState(schema)
   })
   const printRef = useRef<HTMLDivElement>(null)
+  const hasSavedRef = useRef(false)
 
   const handleSubmit = useCallback(() => {
     dispatch({ type: 'SUBMIT_ATTEMPT' })
   }, [])
 
-  const handleSubmitConfirm = useCallback(() => {
-    const visibleFieldIds = state.schema.fields
-      .filter(f => state.visibility[f.id] !== false)
-      .map(f => f.id)
+  useEffect(() => {
+    const hasErrors = Object.keys(state.errors).length > 0
+    if (state.isSubmitted && !hasErrors && !state.savedResponse && !hasSavedRef.current) {
+      hasSavedRef.current = true
+      const visibleFieldIds = state.schema.fields
+        .filter(f => state.visibility[f.id] !== false)
+        .map(f => f.id)
 
-    const fieldLabelSnapshot: Record<string, string> = {}
-    for (const f of state.schema.fields) {
-      fieldLabelSnapshot[f.id] = f.label
-    }
+      const fieldLabelSnapshot: Record<string, string> = {}
+      for (const f of state.schema.fields) {
+        fieldLabelSnapshot[f.id] = f.label
+      }
 
-    const response: FormResponse = {
-      id: generateId(),
-      templateId: state.schema.id,
-      schemaSnapshot: state.schema,
-      values: state.values,
-      visibleFieldIds,
-      fieldLabelSnapshot,
-      submittedAt: new Date().toISOString(),
+      const response: FormResponse = {
+        id: generateId(),
+        templateId: state.schema.id,
+        schemaSnapshot: state.schema,
+        values: state.values,
+        visibleFieldIds,
+        fieldLabelSnapshot,
+        submittedAt: new Date().toISOString(),
+      }
+      saveResponse(response)
+      dispatch({ type: 'SUBMIT_SUCCESS', response })
     }
-    saveResponse(response)
-    dispatch({ type: 'SUBMIT_SUCCESS', response })
-  }, [state])
+  }, [state.isSubmitted, state.errors, state.savedResponse, state.schema, state.values, state.visibility])
 
   if (!stored) {
     return (
@@ -58,12 +63,6 @@ export default function FillPage() {
         </div>
       </div>
     )
-  }
-
-  const hasErrors = Object.keys(state.errors).length > 0
-
-  if (state.isSubmitted && !hasErrors && !state.savedResponse) {
-    handleSubmitConfirm()
   }
 
   function downloadPDF() {

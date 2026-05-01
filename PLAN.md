@@ -403,22 +403,22 @@ State: `{ schema, values, touched, isSubmitted, errors, visibility, savedRespons
 ## Phase 9 — Polish + Deliverables
 
 ### Task 27: Final Polish
-- [ ] Walk the full user journey end-to-end (all 9 field types, conditional logic, calculation, submit, PDF)
-- [ ] Fix any visual issues
-- [ ] `npm run build` → 0 errors
+- [x] Walk the full user journey end-to-end (all 9 field types, conditional logic, calculation, submit, PDF)
+- [x] Fix any visual issues (fixed StrictMode double-save bug in FillPage)
+- [x] `npm run build` → 0 errors
 
 ### Task 28: README
 Required content (per spec):
-- [ ] How to run (`npm install` + `npm run dev`)
-- [ ] localStorage schema (keys + shape of stored objects)
-- [ ] Key architectural decisions — **must explicitly explain the AND/OR choice**
-- [ ] What you'd improve with more time
+- [x] How to run (`npm install` + `npm run dev`)
+- [x] localStorage schema (keys + shape of stored objects)
+- [x] Key architectural decisions — **must explicitly explain the AND/OR choice**
+- [x] What you'd improve with more time
 
 ### Task 29: AI Usage Log
 **File:** `ai-usage-log.md`
-- [ ] Every significant prompt used
-- [ ] What was accepted / what was changed and why
-- [ ] At least one example of plausible-but-incorrect AI output that you caught and fixed
+- [x] Every significant prompt used
+- [x] What was accepted / what was changed and why
+- [x] At least one example of plausible-but-incorrect AI output that you caught and fixed
 
 ---
 
