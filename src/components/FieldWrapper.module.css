@@ -1,0 +1,29 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.required {
+  color: var(--danger);
+  font-size: 13px;
+}
+
+.hint {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.error {
+  font-size: 13px;
+  color: var(--danger);
+}

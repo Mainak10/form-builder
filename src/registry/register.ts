@@ -1,7 +1,21 @@
-// Field registrations are imported here as they are implemented.
-// Adding a new field type requires only:
-//   1. Creating the field file in src/fields/
-//   2. Adding one import line here
+// src/registry/register.ts
+import { registerField } from '@/registry'
+import { singleLineRegistration } from '@/fields/SingleLineField'
+import { multiLineRegistration } from '@/fields/MultiLineField'
+import { numberRegistration } from '@/fields/NumberField'
+import { dateRegistration } from '@/fields/DateField'
+import { singleSelectRegistration } from '@/fields/SingleSelectField'
+import { multiSelectRegistration } from '@/fields/MultiSelectField'
+import { fileUploadRegistration } from '@/fields/FileUploadField'
+import { sectionHeaderRegistration } from '@/fields/SectionHeaderField'
+import { calculationRegistration } from '@/fields/CalculationField'
 
-// Imports will be added in Task 13 once all fields are implemented.
-export {}
+registerField(singleLineRegistration)
+registerField(multiLineRegistration)
+registerField(numberRegistration)
+registerField(dateRegistration)
+registerField(singleSelectRegistration)
+registerField(multiSelectRegistration)
+registerField(fileUploadRegistration)
+registerField(sectionHeaderRegistration)
+registerField(calculationRegistration)

@@ -32,7 +32,8 @@ export interface FieldRegistration<
 
 const registry = new Map<FieldKind, FieldRegistration>()
 
-export function registerField(reg: FieldRegistration): void {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function registerField(reg: FieldRegistration<any, any>): void {
   registry.set(reg.kind, reg)
 }
 

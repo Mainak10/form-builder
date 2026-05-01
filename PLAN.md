@@ -96,7 +96,7 @@ Routes:
 - Props: `options: SelectOption[]`, `onChange`
 - Renders: list of inputs with ↑ ↓ ✕ per row + "Add option" button
 
-- [ ] **Verify:** `npm run build` passes
+- [x] **Verify:** `npm run build` passes
 
 ---
 
@@ -107,70 +107,70 @@ Each field file exports one `*Registration` object conforming to `FieldRegistrat
 ### Task 7: SingleLine + MultiLine
 **Files:** `src/fields/SingleLineField.tsx` · `src/fields/MultiLineField.tsx`
 
-- [ ] `SingleLineField` — `<input type="text">`, editor has placeholder + maxLength
-- [ ] `MultiLineField` — `<textarea>`, editor has placeholder + rows
-- [ ] validate: required → non-empty check
-- [ ] **Verify:** `npm run build` passes
+- [x] `SingleLineField` — `<input type="text">`, editor has placeholder + maxLength
+- [x] `MultiLineField` — `<textarea>`, editor has placeholder + rows
+- [x] validate: required → non-empty check
+- [x] **Verify:** `npm run build` passes
 
 ---
 
 ### Task 8: Number + Date
 **Files:** `src/fields/NumberField.tsx` · `src/fields/DateField.tsx`
 
-- [ ] `NumberField` — `<input type="text" inputMode="decimal">`, parse on blur, editor has min/max/decimalPlaces
-- [ ] `DateField` — `<input type="date">`, `createDefaultValue` applies `prefillToday` via `todayISO()`, editor has prefillToday checkbox
-- [ ] validate Number: required, min, max
-- [ ] validate Date: required → non-empty
-- [ ] **Verify:** `npm run build` passes
+- [x] `NumberField` — `<input type="text" inputMode="decimal">`, parse on blur, editor has min/max/decimalPlaces
+- [x] `DateField` — `<input type="date">`, `createDefaultValue` applies `prefillToday` via `todayISO()`, editor has prefillToday checkbox
+- [x] validate Number: required, min, max
+- [x] validate Date: required → non-empty
+- [x] **Verify:** `npm run build` passes
 
 ---
 
 ### Task 9: SingleSelect
 **File:** `src/fields/SingleSelectField.tsx`
 
-- [ ] Three display modes in one Renderer: `radio` | `dropdown` | `tiles`
-- [ ] Editor: displayType `<select>` + `<OptionsEditor>`
-- [ ] validate: required → non-empty value
-- [ ] **Verify:** `npm run build` passes
+- [x] Three display modes in one Renderer: `radio` | `dropdown` | `tiles`
+- [x] Editor: displayType `<select>` + `<OptionsEditor>`
+- [x] validate: required → non-empty value
+- [x] **Verify:** `npm run build` passes
 
 ---
 
 ### Task 10: MultiSelect
 **File:** `src/fields/MultiSelectField.tsx`
 
-- [ ] Render checkboxes; hard-cap `maxSelections` (disable unchecked options when at max)
-- [ ] Editor: minSelections + maxSelections inputs + `<OptionsEditor>`
-- [ ] validate: required → at least 1; minSelections soft check on submit
-- [ ] **Verify:** `npm run build` passes
+- [x] Render checkboxes; hard-cap `maxSelections` (disable unchecked options when at max)
+- [x] Editor: minSelections + maxSelections inputs + `<OptionsEditor>`
+- [x] validate: required → at least 1; minSelections soft check on submit
+- [x] **Verify:** `npm run build` passes
 
 ---
 
 ### Task 11: FileUpload
 **File:** `src/fields/FileUploadField.tsx`
 
-- [ ] Drag-and-drop zone + click-to-browse (`<input type="file" style display:none>`)
-- [ ] Store `FileMetadata[]` only (no actual file blobs)
-- [ ] Filter files exceeding `maxFileSizeMB` on drop/select
-- [ ] Editor: maxFileSizeMB + acceptedTypes (comma-separated string)
-- [ ] validate: required → at least 1 file
-- [ ] **Verify:** `npm run build` passes
+- [x] Drag-and-drop zone + click-to-browse (`<input type="file" style display:none>`)
+- [x] Store `FileMetadata[]` only (no actual file blobs)
+- [x] Filter files exceeding `maxFileSizeMB` on drop/select
+- [x] Editor: maxFileSizeMB + acceptedTypes (comma-separated string)
+- [x] validate: required → at least 1 file
+- [x] **Verify:** `npm run build` passes
 
 ---
 
 ### Task 12: SectionHeader + Calculation
 **Files:** `src/fields/SectionHeaderField.tsx` · `src/fields/CalculationField.tsx`
 
-- [ ] `SectionHeaderField` — renders `<h1>`–`<h6>` based on `size` config + optional description; `validate` always returns null
-- [ ] `CalculationField` — Renderer has 3 display states: no sources configured / null (sources unfilled) / computed number; Editor has operation select + decimalPlaces + source field checkboxes (number fields only)
-- [ ] **Verify:** `npm run build` passes
+- [x] `SectionHeaderField` — renders `<h1>`–`<h6>` based on `size` config + optional description; `validate` always returns null
+- [x] `CalculationField` — Renderer has 3 display states: no sources configured / null (sources unfilled) / computed number; Editor has operation select + decimalPlaces + source field checkboxes (number fields only)
+- [x] **Verify:** `npm run build` passes
 
 ---
 
 ### Task 13: Register All Fields
 **File:** `src/registry/register.ts`
 
-- [ ] Import all 9 `*Registration` exports and call `registerField()` for each
-- [ ] **Verify:** `npm run build` passes, no console errors on page load
+- [x] Import all 9 `*Registration` exports and call `registerField()` for each
+- [x] **Verify:** `npm run build` passes, no console errors on page load
 
 ---
 
