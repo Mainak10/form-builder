@@ -1,5 +1,6 @@
 // src/pages/FillPage.tsx
 import { useReducer, useCallback, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { useParams, Link } from 'react-router-dom'
 import { getTemplate, saveResponse } from '@/storage'
 import { fillReducer, createInitialFillState } from '@/fill/FillReducer'
@@ -95,10 +96,11 @@ export default function FillPage() {
         )}
       </main>
 
-      {state.savedResponse && (
+      {state.savedResponse && createPortal(
         <div ref={printRef} className="print-only">
           <PrintDocument response={state.savedResponse} />
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   )

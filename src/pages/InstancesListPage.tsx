@@ -1,5 +1,6 @@
 // src/pages/InstancesListPage.tsx
 import { useState, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { useParams, Link } from 'react-router-dom'
 import { getTemplate, getResponses } from '@/storage'
 import PrintDocument from '@/pdf/PrintDocument'
@@ -68,10 +69,13 @@ export default function InstancesListPage() {
         )}
       </main>
 
-      {/* Hidden print target */}
-      <div ref={printRef} className="print-only">
-        {printResponse && <PrintDocument response={printResponse} />}
-      </div>
+      {/* Hidden print target — portal to body so print CSS can reveal it */}
+      {createPortal(
+        <div ref={printRef} className="print-only">
+          {printResponse && <PrintDocument response={printResponse} />}
+        </div>,
+        document.body
+      )}
     </div>
   )
 }

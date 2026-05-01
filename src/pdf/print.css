@@ -1,0 +1,41 @@
+@media print {
+  body > * { display: none !important; }
+  .print-only { display: block !important; }
+
+  .print-doc {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 12pt;
+    color: #000;
+    max-width: none;
+    padding: 0;
+  }
+
+  .print-doc h1 { font-size: 20pt; margin-bottom: 4pt; }
+  .print-doc .meta { font-size: 9pt; color: #555; margin-bottom: 20pt; }
+  .print-doc .divider { border: none; border-top: 1px solid #ccc; margin: 12pt 0; }
+
+  .print-doc .field-label {
+    font-weight: bold;
+    font-size: 10pt;
+    margin-bottom: 2pt;
+  }
+
+  .print-doc .field-value {
+    font-size: 11pt;
+    margin-bottom: 10pt;
+    padding-bottom: 4pt;
+    border-bottom: 1px dotted #ddd;
+  }
+
+  .print-doc .section-title {
+    font-size: 14pt;
+    font-weight: bold;
+    margin: 16pt 0 6pt;
+    border-bottom: 1px solid #999;
+    padding-bottom: 3pt;
+  }
+}
+
+.print-only {
+  display: none;
+}
