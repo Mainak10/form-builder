@@ -1,0 +1,123 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  height: 56px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  flex-shrink: 0;
+}
+
+.titleInput {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  outline: none;
+  min-width: 0;
+}
+
+.titleInput::placeholder { color: var(--text-muted); }
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.errCount {
+  font-size: 12px;
+  color: var(--danger);
+  padding: 3px 8px;
+  border-radius: var(--radius);
+  background: rgba(239,68,68,0.08);
+}
+
+.btn {
+  padding: 6px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg);
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.btn:hover { background: var(--bg-hover); }
+
+.btnPrimary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.btnPrimary:hover { background: var(--accent-hover); }
+.btnPrimary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.palette {
+  width: 200px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+}
+
+.configPanel {
+  width: 280px;
+  flex-shrink: 0;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modalContent {
+  background: var(--bg);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.backLink {
+  font-size: 13px;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 4px 8px;
+  border-radius: var(--radius);
+}
+
+.backLink:hover { background: var(--bg-hover); color: var(--text); }

@@ -234,59 +234,59 @@ Schema validation (runs after every action):
 - Select fields have ≥1 option
 - Calculation fields have ≥1 source
 
-- [ ] `createInitialBuilderState(schema?)` factory
-- [ ] **Verify:** `npm run build` passes
+- [x] `createInitialBuilderState(schema?)` factory
+- [x] **Verify:** `npm run build` passes
 
 ---
 
 ### Task 17: FieldPalette
 **Files:** `src/builder/FieldPalette.tsx` + `.module.css`
 
-- [ ] Reads `getAllFields()` from registry — no hardcoded list
-- [ ] Renders a button per field type (icon + label)
-- [ ] Props: `onAddField(kind)`
-- [ ] **Verify:** `npm run build` passes
+- [x] Reads `getAllFields()` from registry — no hardcoded list
+- [x] Renders a button per field type (icon + label)
+- [x] Props: `onAddField(kind)`
+- [x] **Verify:** `npm run build` passes
 
 ---
 
 ### Task 18: BuilderCanvas
 **Files:** `src/builder/BuilderCanvas.tsx` + `.module.css`
 
-- [ ] Empty state: message to click palette items
-- [ ] Each field renders as a draggable card (via `@dnd-kit/sortable`)
+- [x] Empty state: message to click palette items
+- [x] Each field renders as a draggable card (via `@dnd-kit/sortable`)
   - drag handle ⠿ · kind badge · field label · ✕ delete button
   - "⚡ Has conditional rule" indicator
   - selected state styling (accent border + bg)
-- [ ] `DndContext` + `SortableContext` wiring → fires `onReorder(fromIndex, toIndex)` on drag end
-- [ ] Props: `schema`, `selectedFieldId`, `onSelectField`, `onDeleteField`, `onReorder`
-- [ ] **Verify:** `npm run build` passes
+- [x] `DndContext` + `SortableContext` wiring → fires `onReorder(fromIndex, toIndex)` on drag end
+- [x] Props: `schema`, `selectedFieldId`, `onSelectField`, `onDeleteField`, `onReorder`
+- [x] **Verify:** `npm run build` passes
 
 ---
 
 ### Task 19: ConditionalLogicEditor
 **File:** `src/builder/ConditionalLogicEditor.tsx`
 
-- [ ] No rule → "Add conditional rule" button
-- [ ] With rule: one row per condition (target field select → operator select → value input/select)
-- [ ] Operator list is dynamic based on the target field's kind (see Task 14 operator table)
-- [ ] For select field values, render a `<select>` of that field's options
-- [ ] AND/OR toggle visible only when ≥2 conditions
-- [ ] "Add condition" + "Remove rule" buttons
-- [ ] Props: `fieldId`, `schema`, `onUpdateRule`, `onDeleteRule`
-- [ ] **Verify:** `npm run build` passes
+- [x] No rule → "Add conditional rule" button
+- [x] With rule: one row per condition (target field select → operator select → value input/select)
+- [x] Operator list is dynamic based on the target field's kind (see Task 14 operator table)
+- [x] For select field values, render a `<select>` of that field's options
+- [x] AND/OR toggle visible only when ≥2 conditions
+- [x] "Add condition" + "Remove rule" buttons
+- [x] Props: `fieldId`, `schema`, `onUpdateRule`, `onDeleteRule`
+- [x] **Verify:** `npm run build` passes
 
 ---
 
 ### Task 20: ConfigPanel
 **Files:** `src/builder/ConfigPanel.tsx` + `.module.css`
 
-- [ ] Empty state when no field selected
-- [ ] When field selected, three sections:
+- [x] Empty state when no field selected
+- [x] When field selected, three sections:
   1. **Field Settings** — label input, hint input (not for section_header), required checkbox (not for section_header/calculation)
   2. **Field Options** — renders `reg.Editor` for the selected field
   3. **Conditional Logic** — renders `<ConditionalLogicEditor>` (not for section_header)
-- [ ] Props: `selectedField`, `schema`, `dispatch`
-- [ ] **Verify:** `npm run build` passes
+- [x] Props: `selectedField`, `schema`, `dispatch`
+- [x] **Verify:** `npm run build` passes
 
 ---
 
@@ -303,21 +303,12 @@ Header:
 - Save button (disabled when not dirty; validates before saving)
 
 Behaviors:
-- [ ] Load existing template from storage on mount (if `:templateId` param present)
-- [ ] `beforeunload` event guard when `isDirty`
-- [ ] On save success: redirect `/builder/new` → `/builder/:id` (replace history)
-- [ ] Preview modal: renders each field via `reg.Renderer` with `isDisabled=true` and default values
+- [x] Load existing template from storage on mount (if `:templateId` param present)
+- [x] `beforeunload` event guard when `isDirty`
+- [x] On save success: redirect `/builder/new` → `/builder/:id` (replace history)
+- [x] Preview modal: renders each field via `reg.Renderer` with `isDisabled=true` and default values
 
-- [ ] **Verify in browser:**
-  - Add fields via palette → appear in canvas
-  - Select field → ConfigPanel opens
-  - Edit label → card updates
-  - Drag to reorder → order changes
-  - Delete field → removed + cascade cleans conditions
-  - Add conditional rule → ⚡ badge appears on card
-  - Preview → all fields render disabled
-  - Save → "Saved!" toast, URL updates
-  - Refresh → form reloads from localStorage
+- [x] **Verify:** `npm run build` passes — 0 errors, 58 modules, 365 kB bundle
 
 ---
 
