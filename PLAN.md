@@ -181,17 +181,17 @@ Each field file exports one `*Registration` object conforming to `FieldRegistrat
 
 Pure function: `runConditionalLogicEngine(schema, values) → VisibilityState`
 
-- [ ] Iterate schema fields; if no rule → `visible = true`
-- [ ] Evaluate each condition against the target field's current value
-- [ ] Operator support per field kind:
+- [x] Iterate schema fields; if no rule → `visible = true`
+- [x] Evaluate each condition against the target field's current value
+- [x] Operator support per field kind:
   - text: `is_filled`, `is_empty`, `equals`, `not_equals`, `contains`, `not_contains`
   - number: `is_filled`, `is_empty`, `equals`, `not_equals`, `greater_than`, `less_than`
   - date: `is_filled`, `is_empty`, `equals`, `before`, `after`
   - single_select: `is_filled`, `is_empty`, `equals`, `not_equals`, `includes_option`, `excludes_option`
   - multi_select: `is_filled`, `is_empty`, `includes_option`, `excludes_option`
   - file_upload: `is_filled`, `is_empty`
-- [ ] AND → all conditions true; OR → any condition true
-- [ ] **Verify:** `npm run build` passes
+- [x] AND → all conditions true; OR → any condition true
+- [x] **Verify:** `npm run build` passes
 
 ---
 
@@ -200,10 +200,10 @@ Pure function: `runConditionalLogicEngine(schema, values) → VisibilityState`
 
 Pure function: `runCalculationEngine(schema, values, visibility) → Record<string, number | null>`
 
-- [ ] For each `calculation` field: collect `sourceFieldIds`
-- [ ] Exclude: hidden source fields, source fields that are themselves calculations (no chaining)
-- [ ] If no valid sources → `null`; else compute sum/average/product, round to `decimalPlaces`
-- [ ] **Verify:** `npm run build` passes
+- [x] For each `calculation` field: collect `sourceFieldIds`
+- [x] Exclude: hidden source fields, source fields that are themselves calculations (no chaining)
+- [x] If no valid sources → `null`; else compute sum/average/product, round to `decimalPlaces`
+- [x] **Verify:** `npm run build` passes
 
 ---
 
