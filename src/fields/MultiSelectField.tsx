@@ -6,7 +6,7 @@ import type { FieldRegistration, RendererProps, EditorProps } from '@/registry'
 
 type V = { kind: 'multi_select'; value: string[] }
 
-function Renderer({ config, value, onChange, error, isTouched, isSubmitted, isDisabled }: RendererProps<MultiSelectConfig, V>) {
+function Renderer({ config, value, onChange, onBlur, error, isTouched, isSubmitted, isDisabled }: RendererProps<MultiSelectConfig, V>) {
   const showError = isTouched || isSubmitted
 
   function toggle(optId: string) {
@@ -21,7 +21,7 @@ function Renderer({ config, value, onChange, error, isTouched, isSubmitted, isDi
 
   return (
     <FieldWrapper label={config.label} required={config.required} hint={config.hint} error={error} showError={showError}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }} onBlur={onBlur}>
         {config.options.map(o => {
           const checked = value.value.includes(o.id)
           const atMax = config.maxSelections != null && value.value.length >= config.maxSelections && !checked

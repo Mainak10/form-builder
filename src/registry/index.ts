@@ -5,6 +5,7 @@ export interface RendererProps<C extends FieldConfig, V extends FieldValue> {
   config: C
   value: V
   onChange: (value: V) => void
+  onBlur?: () => void
   error?: string
   isTouched: boolean
   isSubmitted: boolean

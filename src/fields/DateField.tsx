@@ -9,7 +9,7 @@ function todayISO(): string {
   return new Date().toISOString().slice(0, 10)
 }
 
-function Renderer({ config, value, onChange, error, isTouched, isSubmitted, isDisabled }: RendererProps<DateConfig, V>) {
+function Renderer({ config, value, onChange, onBlur, error, isTouched, isSubmitted, isDisabled }: RendererProps<DateConfig, V>) {
   const showError = isTouched || isSubmitted
   return (
     <FieldWrapper label={config.label} required={config.required} hint={config.hint} error={error} showError={showError} htmlFor={config.id}>
@@ -18,6 +18,7 @@ function Renderer({ config, value, onChange, error, isTouched, isSubmitted, isDi
         type="date"
         value={value.value}
         onChange={e => onChange({ kind: 'date', value: e.target.value })}
+        onBlur={onBlur}
         disabled={isDisabled}
         style={{ width: '100%', padding: '8px 10px', border: '1px solid var(--border)', borderRadius: 'var(--radius)', fontSize: 14, background: 'var(--bg)', color: 'var(--text)' }}
       />

@@ -6,7 +6,7 @@ import type { FieldRegistration, RendererProps, EditorProps } from '@/registry'
 
 type V = { kind: 'single_select'; value: string }
 
-function Renderer({ config, value, onChange, error, isTouched, isSubmitted, isDisabled }: RendererProps<SingleSelectConfig, V>) {
+function Renderer({ config, value, onChange, onBlur, error, isTouched, isSubmitted, isDisabled }: RendererProps<SingleSelectConfig, V>) {
   const showError = isTouched || isSubmitted
 
   function select(optId: string) {
@@ -20,6 +20,7 @@ function Renderer({ config, value, onChange, error, isTouched, isSubmitted, isDi
         id={config.id}
         value={value.value}
         onChange={e => select(e.target.value)}
+        onBlur={onBlur}
         disabled={isDisabled}
         style={{ width: '100%', padding: '8px 10px', border: '1px solid var(--border)', borderRadius: 'var(--radius)', fontSize: 14, background: 'var(--bg)', color: 'var(--text)' }}
       >
@@ -29,7 +30,7 @@ function Renderer({ config, value, onChange, error, isTouched, isSubmitted, isDi
     )
   } else if (config.displayType === 'tiles') {
     input = (
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }} onBlur={onBlur}>
         {config.options.map(o => (
           <button
             key={o.id}
@@ -55,7 +56,7 @@ function Renderer({ config, value, onChange, error, isTouched, isSubmitted, isDi
   } else {
     // radio (default)
     input = (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }} onBlur={onBlur}>
         {config.options.map(o => (
           <label key={o.id} style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: isDisabled ? 'default' : 'pointer', fontSize: 14 }}>
             <input

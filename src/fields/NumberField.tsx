@@ -6,7 +6,7 @@ import type { FieldRegistration, RendererProps, EditorProps } from '@/registry'
 
 type V = { kind: 'number'; value: number | null }
 
-function Renderer({ config, value, onChange, error, isTouched, isSubmitted, isDisabled }: RendererProps<NumberConfig, V>) {
+function Renderer({ config, value, onChange, onBlur, error, isTouched, isSubmitted, isDisabled }: RendererProps<NumberConfig, V>) {
   const [raw, setRaw] = useState(() => value.value == null ? '' : String(value.value))
   const showError = isTouched || isSubmitted
 
@@ -20,6 +20,7 @@ function Renderer({ config, value, onChange, error, isTouched, isSubmitted, isDi
       setRaw(String(rounded))
       onChange({ kind: 'number', value: rounded })
     }
+    onBlur?.()
   }
 
   return (

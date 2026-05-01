@@ -5,7 +5,7 @@ import type { FieldRegistration, RendererProps, EditorProps } from '@/registry'
 
 type V = { kind: 'single_line'; value: string }
 
-function Renderer({ config, value, onChange, error, isTouched, isSubmitted, isDisabled }: RendererProps<SingleLineConfig, V>) {
+function Renderer({ config, value, onChange, onBlur, error, isTouched, isSubmitted, isDisabled }: RendererProps<SingleLineConfig, V>) {
   const showError = isTouched || isSubmitted
   return (
     <FieldWrapper label={config.label} required={config.required} hint={config.hint} error={error} showError={showError} htmlFor={config.id}>
@@ -14,6 +14,7 @@ function Renderer({ config, value, onChange, error, isTouched, isSubmitted, isDi
         type="text"
         value={value.value}
         onChange={e => onChange({ kind: 'single_line', value: e.target.value })}
+        onBlur={onBlur}
         placeholder={config.placeholder}
         maxLength={config.maxLength}
         disabled={isDisabled}
