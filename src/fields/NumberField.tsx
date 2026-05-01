@@ -30,7 +30,16 @@ function Renderer({ config, value, onChange, onBlur, error, isTouched, isSubmitt
         type="text"
         inputMode="decimal"
         value={raw}
-        onChange={e => setRaw(e.target.value)}
+        onChange={e => {
+          const next = e.target.value
+          setRaw(next)
+          const parsed = parseFloat(next)
+          if (next === '' || isNaN(parsed)) {
+            onChange({ kind: 'number', value: null })
+          } else {
+            onChange({ kind: 'number', value: parsed })
+          }
+        }}
         onBlur={handleBlur}
         placeholder={config.placeholder}
         disabled={isDisabled}

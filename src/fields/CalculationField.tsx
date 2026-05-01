@@ -5,7 +5,7 @@ import type { FieldRegistration, RendererProps, EditorProps } from '@/registry'
 type V = { kind: 'calculation'; value: number | null }
 
 function Renderer({ config, value }: RendererProps<CalculationConfig, V>) {
-  const label = { sum: 'Sum', average: 'Average', product: 'Product' }[config.operation]
+  const label = { sum: 'Sum', average: 'Average', minimum: 'Minimum', maximum: 'Maximum' }[config.operation]
 
   let display: React.ReactNode
   if (config.sourceFieldIds.length === 0) {
@@ -45,7 +45,8 @@ function Editor({ config, onChange, schema }: CalcEditorProps) {
           style={{ display: 'block', marginTop: 4, padding: '6px 8px', border: '1px solid var(--border)', borderRadius: 'var(--radius)', fontSize: 13 }}>
           <option value="sum">Sum</option>
           <option value="average">Average</option>
-          <option value="product">Product</option>
+          <option value="minimum">Minimum</option>
+          <option value="maximum">Maximum</option>
         </select>
       </label>
       <label style={{ fontSize: 13, fontWeight: 500 }}>

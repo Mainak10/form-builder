@@ -1,4 +1,4 @@
-import type { FieldConfig, FieldKind, FieldValue, SchemaError } from '@/types'
+import type { FieldConfig, FieldKind, FieldValue, FormSchema, SchemaError } from '@/types'
 import type { ReactNode } from 'react'
 
 export interface RendererProps<C extends FieldConfig, V extends FieldValue> {
@@ -15,6 +15,7 @@ export interface RendererProps<C extends FieldConfig, V extends FieldValue> {
 export interface EditorProps<C extends FieldConfig> {
   config: C
   onChange: (config: C) => void
+  schema?: FormSchema
 }
 
 export interface FieldRegistration<

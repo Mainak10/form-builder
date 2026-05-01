@@ -36,8 +36,10 @@ export function runCalculationEngine(
       result = sources.reduce((a, b) => a + b, 0)
     } else if (calcConfig.operation === 'average') {
       result = sources.reduce((a, b) => a + b, 0) / sources.length
+    } else if (calcConfig.operation === 'minimum') {
+      result = Math.min(...sources)
     } else {
-      result = sources.reduce((a, b) => a * b, 1)
+      result = Math.max(...sources)
     }
 
     const dp = calcConfig.decimalPlaces ?? 2

@@ -380,11 +380,11 @@ State: `{ schema, values, touched, isSubmitted, errors, visibility, savedRespons
 ### Task 25: Templates List Page
 **Files:** `src/pages/TemplatesListPage.tsx` + `.module.css`
 
-- [ ] Load `getAllTemplates()` on mount
-- [ ] Empty state: icon + message + "Create your first form" link
-- [ ] Grid of cards: title · field count · response count · updated date
-- [ ] Card actions: **Fill** (primary) · **Edit** · **Responses** (only if responseCount > 0) · **Delete** (with `confirm()`)
-- [ ] Delete removes from state immediately
+- [x] Load `getAllTemplates()` on mount
+- [x] Empty state: icon + message + "Create your first form" link
+- [x] Grid of cards: title · field count · response count · updated date
+- [x] Card actions: **Fill** (primary) · **Edit** · **Responses** (only if responseCount > 0) · **Delete** (with `confirm()`)
+- [x] Delete removes from state immediately
 - [ ] **Verify:** Create form → appears in list; submit response → count increments; delete → gone
 
 ---
@@ -392,10 +392,10 @@ State: `{ schema, values, touched, isSubmitted, errors, visibility, savedRespons
 ### Task 26: Instances List Page
 **Files:** `src/pages/InstancesListPage.tsx` + `.module.css`
 
-- [ ] Load `getTemplate()` + `getResponses()` on mount
-- [ ] Banner if template was deleted (template = null but responses exist)
-- [ ] Table: submitted date · response ID (truncated) · visible field count · "Download PDF" button
-- [ ] Download PDF: set `printResponse` state → mount `<PrintDocument>` → `window.print()`
+- [x] Load `getTemplate()` + `getResponses()` on mount
+- [x] Banner if template was deleted (template = null but responses exist)
+- [x] Table: submitted date · response ID (truncated) · visible field count · "Download PDF" button
+- [x] Download PDF: set `printResponse` state → mount `<PrintDocument>` → `window.print()`
 - [ ] **Verify:** Responses appear in table; re-download PDF works; deleted template shows banner
 
 ---

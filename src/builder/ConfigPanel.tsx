@@ -73,7 +73,7 @@ export default function ConfigPanel({ selectedField, schema, dispatch }: Props) 
       <div className={styles.section}>
         <div className={styles.sectionTitle}>Field Options</div>
         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        <reg.Editor config={selectedField as any} onChange={config => updateConfig(config as FieldConfig)} />
+        <reg.Editor config={selectedField as any} onChange={config => updateConfig(config as FieldConfig)} schema={schema} />
       </div>
 
       {!isSectionHeader && (

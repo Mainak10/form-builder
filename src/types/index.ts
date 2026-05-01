@@ -75,7 +75,7 @@ export interface SectionHeaderConfig extends FieldConfigBase {
 export interface CalculationConfig extends FieldConfigBase {
   kind: 'calculation'
   sourceFieldIds: string[]
-  operation: 'sum' | 'average' | 'product'
+  operation: 'sum' | 'average' | 'minimum' | 'maximum'
   decimalPlaces?: number
 }
 
