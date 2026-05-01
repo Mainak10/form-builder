@@ -15,11 +15,14 @@ function formatBytes(bytes: number): string {
 function Renderer({ config, value, onChange, error, isTouched, isSubmitted, isDisabled }: RendererProps<FileUploadConfig, V>) {
   const showError = isTouched || isSubmitted
   const inputRef = useRef<HTMLInputElement>(null)
+  const atLimit = config.maxFiles != null && value.value.length >= config.maxFiles
 
   function handleFiles(files: FileList | null) {
-    if (!files) return
+    if (!files || isDisabled || atLimit) return
     const maxBytes = config.maxFileSizeMB != null ? config.maxFileSizeMB * 1024 * 1024 : Infinity
+    const remaining = config.maxFiles != null ? config.maxFiles - value.value.length : Infinity
     const newMeta: FileMetadata[] = Array.from(files)
+      .slice(0, remaining)
       .filter(f => f.size <= maxBytes)
       .map(f => ({ name: f.name, size: f.size, type: f.type, lastModified: f.lastModified }))
     onChange({ kind: 'file_upload', value: [...value.value, ...newMeta] })
@@ -29,20 +32,25 @@ function Renderer({ config, value, onChange, error, isTouched, isSubmitted, isDi
     onChange({ kind: 'file_upload', value: value.value.filter((_, i) => i !== index) })
   }
 
+  const hints: string[] = []
+  if (config.maxFiles != null) hints.push(`Max ${config.maxFiles} file${config.maxFiles !== 1 ? 's' : ''}`)
+  if (config.maxFileSizeMB != null) hints.push(`Max size: ${config.maxFileSizeMB} MB`)
+
   return (
     <FieldWrapper label={config.label} required={config.required} hint={config.hint} error={error} showError={showError}>
       <div
         onDrop={e => { e.preventDefault(); handleFiles(e.dataTransfer.files) }}
         onDragOver={e => e.preventDefault()}
-        onClick={() => !isDisabled && inputRef.current?.click()}
+        onClick={() => !isDisabled && !atLimit && inputRef.current?.click()}
         style={{
           border: '2px dashed var(--border)',
           borderRadius: 'var(--radius)',
           padding: 24,
           textAlign: 'center',
-          cursor: isDisabled ? 'default' : 'pointer',
+          cursor: isDisabled || atLimit ? 'default' : 'pointer',
           fontSize: 14,
-          color: 'var(--text-muted)',
+          color: atLimit ? 'var(--text-muted)' : 'var(--text-muted)',
+          opacity: atLimit ? 0.6 : 1,
         }}
       >
         <input
@@ -52,10 +60,10 @@ function Renderer({ config, value, onChange, error, isTouched, isSubmitted, isDi
           accept={config.acceptedTypes?.join(',')}
           style={{ display: 'none' }}
           onChange={e => handleFiles(e.target.files)}
-          disabled={isDisabled}
+          disabled={isDisabled || atLimit}
         />
-        Drop files here or click to upload
-        {config.maxFileSizeMB != null && <div style={{ fontSize: 12, marginTop: 4 }}>Max size: {config.maxFileSizeMB} MB</div>}
+        {atLimit ? `Limit reached (${config.maxFiles} files)` : 'Drop files here or click to upload'}
+        {hints.length > 0 && <div style={{ fontSize: 12, marginTop: 4 }}>{hints.join(' · ')}</div>}
       </div>
       {value.value.length > 0 && (
         <ul style={{ margin: '8px 0 0', padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 4 }}>
@@ -73,17 +81,25 @@ function Renderer({ config, value, onChange, error, isTouched, isSubmitted, isDi
 }
 
 function Editor({ config, onChange }: EditorProps<FileUploadConfig>) {
+  const s = { display: 'block', marginTop: 4, padding: '6px 8px', border: '1px solid var(--border)', borderRadius: 'var(--radius)', fontSize: 13 } as const
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-      <label style={{ fontSize: 13, fontWeight: 500 }}>
-        Max file size (MB)
-        <input type="number" min={1} value={config.maxFileSizeMB ?? ''} onChange={e => onChange({ ...config, maxFileSizeMB: e.target.value ? Number(e.target.value) : undefined })}
-          style={{ display: 'block', marginTop: 4, width: 100, padding: '6px 8px', border: '1px solid var(--border)', borderRadius: 'var(--radius)', fontSize: 13 }} />
-      </label>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+        <label style={{ fontSize: 13, fontWeight: 500 }}>
+          Max files
+          <input type="number" min={1} value={config.maxFiles ?? ''} onChange={e => onChange({ ...config, maxFiles: e.target.value ? Number(e.target.value) : undefined })}
+            style={s} />
+        </label>
+        <label style={{ fontSize: 13, fontWeight: 500 }}>
+          Max file size (MB)
+          <input type="number" min={1} value={config.maxFileSizeMB ?? ''} onChange={e => onChange({ ...config, maxFileSizeMB: e.target.value ? Number(e.target.value) : undefined })}
+            style={s} />
+        </label>
+      </div>
       <label style={{ fontSize: 13, fontWeight: 500 }}>
         Accepted types (comma-separated, e.g. image/*,.pdf)
         <input type="text" value={config.acceptedTypes?.join(',') ?? ''} onChange={e => onChange({ ...config, acceptedTypes: e.target.value ? e.target.value.split(',').map(s => s.trim()) : undefined })}
-          style={{ display: 'block', marginTop: 4, width: '100%', padding: '6px 8px', border: '1px solid var(--border)', borderRadius: 'var(--radius)', fontSize: 13 }} />
+          style={{ ...s, width: '100%' }} />
       </label>
     </div>
   )

@@ -19,6 +19,8 @@ function Renderer({ config, value, onChange, onBlur, error, isTouched, isSubmitt
         value={value.value}
         onChange={e => onChange({ kind: 'date', value: e.target.value })}
         onBlur={onBlur}
+        min={config.minDate}
+        max={config.maxDate}
         disabled={isDisabled}
         style={{ width: '100%', padding: '8px 10px', border: '1px solid var(--border)', borderRadius: 'var(--radius)', fontSize: 14, background: 'var(--bg)', color: 'var(--text)' }}
       />
@@ -27,15 +29,28 @@ function Renderer({ config, value, onChange, onBlur, error, isTouched, isSubmitt
 }
 
 function Editor({ config, onChange }: EditorProps<DateConfig>) {
+  const s = { display: 'block', marginTop: 4, padding: '6px 8px', border: '1px solid var(--border)', borderRadius: 'var(--radius)', fontSize: 13 } as const
   return (
-    <label style={{ fontSize: 13, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 8 }}>
-      <input
-        type="checkbox"
-        checked={config.prefillToday}
-        onChange={e => onChange({ ...config, prefillToday: e.target.checked })}
-      />
-      Pre-fill with today's date
-    </label>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <label style={{ fontSize: 13, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 8 }}>
+        <input
+          type="checkbox"
+          checked={config.prefillToday}
+          onChange={e => onChange({ ...config, prefillToday: e.target.checked })}
+        />
+        Pre-fill with today's date
+      </label>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+        <label style={{ fontSize: 13, fontWeight: 500 }}>
+          Min date
+          <input type="date" value={config.minDate ?? ''} onChange={e => onChange({ ...config, minDate: e.target.value || undefined })} style={s} />
+        </label>
+        <label style={{ fontSize: 13, fontWeight: 500 }}>
+          Max date
+          <input type="date" value={config.maxDate ?? ''} onChange={e => onChange({ ...config, maxDate: e.target.value || undefined })} style={s} />
+        </label>
+      </div>
+    </div>
   )
 }
 

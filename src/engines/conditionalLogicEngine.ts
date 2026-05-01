@@ -1,4 +1,4 @@
-import type { FormSchema, FieldValue, VisibilityState, Condition } from '@/types'
+import type { FormSchema, FieldValue, VisibilityState, Condition, EngineResult } from '@/types'
 
 function evaluateCondition(condition: Condition, values: Record<string, FieldValue>): boolean {
   const { targetFieldId, operator, value } = condition
@@ -40,6 +40,11 @@ function evaluateCondition(condition: Condition, values: Record<string, FieldVal
   if (fieldValue.kind === 'number') {
     const num = fieldValue.value
     if (num === null) return false
+    if (operator === 'is_within_range') {
+      const parts = String(value ?? '').split(',').map(Number)
+      if (parts.length !== 2 || parts.some(isNaN)) return false
+      return num >= parts[0] && num <= parts[1]
+    }
     const target = Number(value)
     if (operator === 'equals') return num === target
     if (operator === 'not_equals') return num !== target
@@ -70,6 +75,10 @@ function evaluateCondition(condition: Condition, values: Record<string, FieldVal
     const target = String(value ?? '')
     if (operator === 'includes_option') return selected.includes(target)
     if (operator === 'excludes_option') return !selected.includes(target)
+    if (operator === 'contains_all_of') {
+      const targets = target.split(',').filter(Boolean)
+      return targets.length > 0 && targets.every(t => selected.includes(t))
+    }
   }
 
   return false
@@ -78,18 +87,43 @@ function evaluateCondition(condition: Condition, values: Record<string, FieldVal
 export function runConditionalLogicEngine(
   schema: FormSchema,
   values: Record<string, FieldValue>
-): VisibilityState {
+): EngineResult {
   const visibility: VisibilityState = {}
+  const requiredOverrides: Record<string, boolean | null> = {}
 
   for (const field of schema.fields) {
     const rule = schema.conditionalRules[field.id]
+    requiredOverrides[field.id] = null
+
     if (!rule || rule.conditions.length === 0) {
       visibility[field.id] = true
       continue
     }
-    const results = rule.conditions.map(c => evaluateCondition(c, values))
-    visibility[field.id] = rule.logic === 'AND' ? results.every(Boolean) : results.some(Boolean)
+
+    const conditionsMet = rule.logic === 'AND'
+      ? rule.conditions.every(c => evaluateCondition(c, values))
+      : rule.conditions.some(c => evaluateCondition(c, values))
+
+    const effect = rule.effect ?? 'show'
+    const defaultVisible = rule.defaultVisible ?? (effect === 'hide')
+
+    switch (effect) {
+      case 'show':
+        visibility[field.id] = conditionsMet ? true : defaultVisible
+        break
+      case 'hide':
+        visibility[field.id] = conditionsMet ? false : defaultVisible
+        break
+      case 'mark_required':
+        visibility[field.id] = true
+        requiredOverrides[field.id] = conditionsMet ? true : null
+        break
+      case 'mark_not_required':
+        visibility[field.id] = true
+        requiredOverrides[field.id] = conditionsMet ? false : null
+        break
+    }
   }
 
-  return visibility
+  return { visibility, requiredOverrides }
 }

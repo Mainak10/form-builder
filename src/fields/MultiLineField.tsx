@@ -16,6 +16,7 @@ function Renderer({ config, value, onChange, onBlur, error, isTouched, isSubmitt
         onBlur={onBlur}
         placeholder={config.placeholder}
         rows={config.rows ?? 4}
+        maxLength={config.maxLength}
         disabled={isDisabled}
         style={{ width: '100%', padding: '8px 10px', border: '1px solid var(--border)', borderRadius: 'var(--radius)', fontSize: 14, resize: 'vertical', background: 'var(--bg)', color: 'var(--text)' }}
       />
@@ -24,28 +25,31 @@ function Renderer({ config, value, onChange, onBlur, error, isTouched, isSubmitt
 }
 
 function Editor({ config, onChange }: EditorProps<MultiLineConfig>) {
+  const numStyle = { display: 'block', marginTop: 4, width: '100%', padding: '6px 8px', border: '1px solid var(--border)', borderRadius: 'var(--radius)', fontSize: 13 } as const
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       <label style={{ fontSize: 13, fontWeight: 500 }}>
         Placeholder
-        <input
-          type="text"
-          value={config.placeholder ?? ''}
-          onChange={e => onChange({ ...config, placeholder: e.target.value })}
-          style={{ display: 'block', marginTop: 4, width: '100%', padding: '6px 8px', border: '1px solid var(--border)', borderRadius: 'var(--radius)', fontSize: 13 }}
-        />
+        <input type="text" value={config.placeholder ?? ''} onChange={e => onChange({ ...config, placeholder: e.target.value })}
+          style={{ display: 'block', marginTop: 4, width: '100%', padding: '6px 8px', border: '1px solid var(--border)', borderRadius: 'var(--radius)', fontSize: 13 }} />
       </label>
       <label style={{ fontSize: 13, fontWeight: 500 }}>
         Rows
-        <input
-          type="number"
-          min={2}
-          max={20}
-          value={config.rows ?? 4}
-          onChange={e => onChange({ ...config, rows: Number(e.target.value) })}
-          style={{ display: 'block', marginTop: 4, width: 80, padding: '6px 8px', border: '1px solid var(--border)', borderRadius: 'var(--radius)', fontSize: 13 }}
-        />
+        <input type="number" min={2} max={20} value={config.rows ?? 4} onChange={e => onChange({ ...config, rows: Number(e.target.value) })}
+          style={{ ...numStyle, width: 80 }} />
       </label>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+        <label style={{ fontSize: 13, fontWeight: 500 }}>
+          Min length
+          <input type="number" min={0} value={config.minLength ?? ''} onChange={e => onChange({ ...config, minLength: e.target.value ? Number(e.target.value) : undefined })}
+            style={numStyle} />
+        </label>
+        <label style={{ fontSize: 13, fontWeight: 500 }}>
+          Max length
+          <input type="number" min={0} value={config.maxLength ?? ''} onChange={e => onChange({ ...config, maxLength: e.target.value ? Number(e.target.value) : undefined })}
+            style={numStyle} />
+        </label>
+      </div>
     </div>
   )
 }
@@ -58,8 +62,9 @@ export const multiLineRegistration: FieldRegistration<MultiLineConfig, V> = {
   createDefaultValue: () => ({ kind: 'multi_line', value: '' }),
   Renderer,
   Editor,
-  validate: (_config, value, isRequired) => {
+  validate: (config, value, isRequired) => {
     if (isRequired && value.value.trim() === '') return 'This field is required'
+    if (config.minLength && value.value.length > 0 && value.value.length < config.minLength) return `Must be at least ${config.minLength} characters`
     return null
   },
 }

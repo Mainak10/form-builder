@@ -22,13 +22,18 @@ interface FieldConfigBase {
 export interface SingleLineConfig extends FieldConfigBase {
   kind: 'single_line'
   placeholder?: string
+  minLength?: number
   maxLength?: number
+  prefix?: string
+  suffix?: string
 }
 
 export interface MultiLineConfig extends FieldConfigBase {
   kind: 'multi_line'
   placeholder?: string
   rows?: number
+  minLength?: number
+  maxLength?: number
 }
 
 export interface NumberConfig extends FieldConfigBase {
@@ -37,11 +42,15 @@ export interface NumberConfig extends FieldConfigBase {
   min?: number
   max?: number
   decimalPlaces?: number
+  prefix?: string
+  suffix?: string
 }
 
 export interface DateConfig extends FieldConfigBase {
   kind: 'date'
   prefillToday: boolean
+  minDate?: string
+  maxDate?: string
 }
 
 export type SelectOption = { id: string; label: string }
@@ -64,11 +73,14 @@ export interface FileUploadConfig extends FieldConfigBase {
   kind: 'file_upload'
   acceptedTypes?: string[]
   maxFileSizeMB?: number
+  maxFiles?: number
 }
+
+export type SectionHeaderSize = 'xl' | 'large' | 'medium' | 'small' | 'xs'
 
 export interface SectionHeaderConfig extends FieldConfigBase {
   kind: 'section_header'
-  size: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+  size: SectionHeaderSize
   description?: string
 }
 
@@ -94,9 +106,9 @@ export type FieldConfig =
 export type ConditionOperator =
   | 'equals' | 'not_equals'
   | 'contains' | 'not_contains'
-  | 'greater_than' | 'less_than'
+  | 'greater_than' | 'less_than' | 'is_within_range'
   | 'is_filled' | 'is_empty'
-  | 'includes_option' | 'excludes_option'
+  | 'includes_option' | 'excludes_option' | 'contains_all_of'
   | 'before' | 'after'
 
 export interface Condition {
@@ -108,7 +120,11 @@ export interface Condition {
 
 export type ConditionLogic = 'AND' | 'OR'
 
+export type ConditionalEffect = 'show' | 'hide' | 'mark_required' | 'mark_not_required'
+
 export interface ConditionalRule {
+  effect?: ConditionalEffect
+  defaultVisible?: boolean
   logic: ConditionLogic
   conditions: Condition[]
 }
@@ -162,6 +178,11 @@ export interface StoredTemplate {
 
 // ─── Visibility State ──────────────────────────────────────────────────────────
 export type VisibilityState = Record<string, boolean>
+
+export interface EngineResult {
+  visibility: VisibilityState
+  requiredOverrides: Record<string, boolean | null>
+}
 
 // ─── Schema Errors ─────────────────────────────────────────────────────────────
 export interface SchemaError {

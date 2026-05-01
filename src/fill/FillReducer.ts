@@ -11,6 +11,7 @@ export interface FillState {
   isSubmitted: boolean
   errors: Record<string, string>
   visibility: VisibilityState
+  requiredOverrides: Record<string, boolean | null>
   savedResponse: FormResponse | null
 }
 
@@ -33,20 +34,29 @@ function initValues(schema: FormSchema): Record<string, FieldValue> {
 function runEngines(
   schema: FormSchema,
   values: Record<string, FieldValue>
-): { visibility: VisibilityState; values: Record<string, FieldValue> } {
-  const visibility = runConditionalLogicEngine(schema, values)
+): { visibility: VisibilityState; requiredOverrides: Record<string, boolean | null>; values: Record<string, FieldValue> } {
+  const { visibility, requiredOverrides } = runConditionalLogicEngine(schema, values)
   const computed = runCalculationEngine(schema, values, visibility)
   const newValues = { ...values }
   for (const [id, val] of Object.entries(computed)) {
     newValues[id] = { kind: 'calculation', value: val }
   }
-  return { visibility, values: newValues }
+  return { visibility, requiredOverrides, values: newValues }
+}
+
+function effectiveRequired(
+  field: FormSchema['fields'][number],
+  requiredOverrides: Record<string, boolean | null>
+): boolean {
+  const override = requiredOverrides[field.id]
+  return override != null ? override : field.required
 }
 
 function validateAll(
   schema: FormSchema,
   values: Record<string, FieldValue>,
-  visibility: VisibilityState
+  visibility: VisibilityState,
+  requiredOverrides: Record<string, boolean | null>
 ): Record<string, string> {
   const errors: Record<string, string> = {}
   for (const field of schema.fields) {
@@ -54,8 +64,9 @@ function validateAll(
     if (field.kind === 'section_header' || field.kind === 'calculation') continue
     const value = values[field.id]
     if (!value) continue
+    const isRequired = effectiveRequired(field, requiredOverrides)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const error = validateField(field, value as any, field.required)
+    const error = validateField(field, value as any, isRequired)
     if (error) errors[field.id] = error.message
   }
   return errors
@@ -63,7 +74,7 @@ function validateAll(
 
 export function createInitialFillState(schema: FormSchema): FillState {
   const values = initValues(schema)
-  const { visibility, values: engineValues } = runEngines(schema, values)
+  const { visibility, requiredOverrides, values: engineValues } = runEngines(schema, values)
   return {
     schema,
     values: engineValues,
@@ -71,6 +82,7 @@ export function createInitialFillState(schema: FormSchema): FillState {
     isSubmitted: false,
     errors: {},
     visibility,
+    requiredOverrides,
     savedResponse: null,
   }
 }
@@ -79,9 +91,9 @@ export function fillReducer(state: FillState, action: FillAction): FillState {
   switch (action.type) {
     case 'VALUE_CHANGE': {
       const newValues = { ...state.values, [action.fieldId]: action.value }
-      const { visibility, values } = runEngines(state.schema, newValues)
-      const errors = state.isSubmitted ? validateAll(state.schema, values, visibility) : {}
-      return { ...state, values, visibility, errors }
+      const { visibility, requiredOverrides, values } = runEngines(state.schema, newValues)
+      const errors = state.isSubmitted ? validateAll(state.schema, values, visibility, requiredOverrides) : {}
+      return { ...state, values, visibility, requiredOverrides, errors }
     }
 
     case 'FIELD_BLUR': {
@@ -89,8 +101,9 @@ export function fillReducer(state: FillState, action: FillAction): FillState {
       const field = state.schema.fields.find(f => f.id === action.fieldId)
       const newErrors = { ...state.errors }
       if (field && state.values[action.fieldId]) {
+        const isRequired = effectiveRequired(field, state.requiredOverrides)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const err = validateField(field, state.values[action.fieldId] as any, field.required)
+        const err = validateField(field, state.values[action.fieldId] as any, isRequired)
         if (err) newErrors[action.fieldId] = err.message
         else delete newErrors[action.fieldId]
       }
@@ -98,7 +111,7 @@ export function fillReducer(state: FillState, action: FillAction): FillState {
     }
 
     case 'SUBMIT_ATTEMPT': {
-      const errors = validateAll(state.schema, state.values, state.visibility)
+      const errors = validateAll(state.schema, state.values, state.visibility, state.requiredOverrides)
       return { ...state, isSubmitted: true, errors }
     }
 

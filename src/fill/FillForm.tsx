@@ -26,11 +26,17 @@ export default function FillForm({ state, dispatch, onSubmit }: Props) {
         const error = state.errors[config.id]
         const isTouched = !!state.touched[config.id]
 
+        // Apply required override from conditional logic effect
+        const requiredOverride = state.requiredOverrides[config.id]
+        const effectiveConfig = requiredOverride != null
+          ? { ...config, required: requiredOverride }
+          : config
+
         return (
           <reg.Renderer
             key={config.id}
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            config={config as any}
+            config={effectiveConfig as any}
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             value={value as any}
             onChange={(val: FieldValue) => dispatch({ type: 'VALUE_CHANGE', fieldId: config.id, value: val })}
