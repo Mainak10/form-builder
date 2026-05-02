@@ -19,11 +19,12 @@ interface SortableFieldCardProps {
   config: FieldConfig
   isSelected: boolean
   hasRule: boolean
+  fieldError?: string
   onSelect: () => void
   onDelete: () => void
 }
 
-function SortableFieldCard({ config, isSelected, hasRule, onSelect, onDelete }: SortableFieldCardProps) {
+function SortableFieldCard({ config, isSelected, hasRule, fieldError, onSelect, onDelete }: SortableFieldCardProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: config.id })
 
   const style = {
@@ -37,7 +38,7 @@ function SortableFieldCard({ config, isSelected, hasRule, onSelect, onDelete }: 
     <div
       ref={setNodeRef}
       style={style}
-      className={`${styles.fieldCard} ${isSelected ? styles.selected : ''} ${isDragging ? styles.dragging : ''}`}
+      className={`${styles.fieldCard} ${isSelected ? styles.selected : ''} ${isDragging ? styles.dragging : ''} ${fieldError ? styles.hasError : ''}`}
       onClick={onSelect}
     >
       <div className={styles.cardHeader}>
@@ -53,6 +54,7 @@ function SortableFieldCard({ config, isSelected, hasRule, onSelect, onDelete }: 
       </div>
       <div className={styles.fieldLabel}>{config.label || <em style={{ color: 'var(--text-muted)' }}>Untitled</em>}</div>
       {hasRule && <div className={styles.hasRule}>⚡ Has conditional rule</div>}
+      {fieldError && <div className={styles.fieldError}>⚠ {fieldError}</div>}
     </div>
   )
 }
@@ -60,12 +62,13 @@ function SortableFieldCard({ config, isSelected, hasRule, onSelect, onDelete }: 
 interface Props {
   schema: FormSchema
   selectedFieldId: string | null
+  fieldErrors: Record<string, string>
   onSelectField: (id: string | null) => void
   onDeleteField: (id: string) => void
   onReorder: (fromIndex: number, toIndex: number) => void
 }
 
-export default function BuilderCanvas({ schema, selectedFieldId, onSelectField, onDeleteField, onReorder }: Props) {
+export default function BuilderCanvas({ schema, selectedFieldId, fieldErrors, onSelectField, onDeleteField, onReorder }: Props) {
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }))
 
   function handleDragEnd(event: DragEndEvent) {
@@ -97,6 +100,7 @@ export default function BuilderCanvas({ schema, selectedFieldId, onSelectField, 
               config={config}
               isSelected={selectedFieldId === config.id}
               hasRule={!!schema.conditionalRules[config.id]?.conditions.length}
+              fieldError={fieldErrors[config.id]}
               onSelect={() => onSelectField(config.id)}
               onDelete={() => onDeleteField(config.id)}
             />

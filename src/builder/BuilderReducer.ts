@@ -15,6 +15,7 @@ function generateId(): string {
 function validateSchema(schema: FormSchema): SchemaError[] {
   const errors: SchemaError[] = []
   if (!schema.title.trim()) errors.push({ message: 'Form title is required' })
+  if (schema.fields.length === 0) errors.push({ message: 'Form must have at least one field' })
   for (const field of schema.fields) {
     if (field.kind === 'section_header') continue
     if (!field.label.trim()) errors.push({ fieldId: field.id, message: 'Field label is required' })

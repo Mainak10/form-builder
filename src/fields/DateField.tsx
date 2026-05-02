@@ -62,8 +62,12 @@ export const dateRegistration: FieldRegistration<DateConfig, V> = {
   createDefaultValue: (config) => ({ kind: 'date', value: config.prefillToday ? todayISO() : '' }),
   Renderer,
   Editor,
-  validate: (_config, value, isRequired) => {
+  validate: (config, value, isRequired) => {
     if (isRequired && value.value === '') return 'This field is required'
+    if (value.value) {
+      if (config.minDate && value.value < config.minDate) return `Date must be on or after ${config.minDate}`
+      if (config.maxDate && value.value > config.maxDate) return `Date must be on or before ${config.maxDate}`
+    }
     return null
   },
 }

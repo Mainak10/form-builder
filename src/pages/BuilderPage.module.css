@@ -38,12 +38,19 @@
   flex-shrink: 0;
 }
 
-.errCount {
+.errorBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  padding: 8px 16px;
+  background: rgba(239, 68, 68, 0.06);
+  border-bottom: 1px solid rgba(239, 68, 68, 0.2);
+  flex-shrink: 0;
+}
+
+.errorItem {
   font-size: 12px;
   color: var(--danger);
-  padding: 3px 8px;
-  border-radius: var(--radius);
-  background: rgba(239, 68, 68, 0.08);
 }
 
 .btn {

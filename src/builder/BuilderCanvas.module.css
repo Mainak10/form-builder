@@ -100,3 +100,13 @@
   color: var(--accent);
   margin-top: 4px;
 }
+
+.fieldCard.hasError {
+  border-color: var(--danger);
+}
+
+.fieldError {
+  font-size: 11px;
+  color: var(--danger);
+  margin-top: 4px;
+}

@@ -21,6 +21,7 @@ export default function BuilderPage() {
   })
   const [showPreview, setShowPreview] = useState(false)
   const [saveMsg, setSaveMsg] = useState<string | null>(null)
+  const [saveAttempted, setSaveAttempted] = useState(false)
 
   useEffect(() => {
     function handler(e: BeforeUnloadEvent) {
@@ -33,13 +34,13 @@ export default function BuilderPage() {
   const save = useCallback(() => {
     const errors = state.schemaErrors
     if (errors.length > 0) {
-      setSaveMsg(errors[0].message)
-      setTimeout(() => setSaveMsg(null), 3000)
+      setSaveAttempted(true)
       return
     }
     const ok = saveTemplate(state.schema)
     if (ok) {
       dispatch({ type: 'SAVE_SUCCESS' })
+      setSaveAttempted(false)
       setSaveMsg('Saved!')
       setTimeout(() => setSaveMsg(null), 2000)
       if (!templateId) {
@@ -55,6 +56,15 @@ export default function BuilderPage() {
     ? state.schema.fields.find(f => f.id === state.selectedFieldId) ?? null
     : null
 
+  const fieldErrors: Record<string, string> = {}
+  const formErrors: string[] = []
+  if (saveAttempted) {
+    for (const e of state.schemaErrors) {
+      if (e.fieldId) fieldErrors[e.fieldId] = e.message
+      else formErrors.push(e.message)
+    }
+  }
+
   return (
     <div className={styles.page}>
       <header className={styles.header}>
@@ -66,10 +76,7 @@ export default function BuilderPage() {
           placeholder="Untitled Form"
         />
         <div className={styles.headerRight}>
-          {saveMsg && <span className={state.schemaErrors.length > 0 ? styles.errCount : undefined}>{saveMsg}</span>}
-          {state.schemaErrors.length > 0 && !saveMsg && (
-            <span className={styles.errCount}>{state.schemaErrors.length} issue{state.schemaErrors.length > 1 ? 's' : ''}</span>
-          )}
+          {saveMsg && <span>{saveMsg}</span>}
           {state.schema.fields.length > 0 && (
             <button className={styles.btn} onClick={() => setShowPreview(true)}>Preview</button>
           )}
@@ -83,6 +90,13 @@ export default function BuilderPage() {
         </div>
       </header>
 
+      {saveAttempted && state.schemaErrors.length > 0 && (
+        <div className={styles.errorBar}>
+          {formErrors.map((msg, i) => <span key={i} className={styles.errorItem}>⚠ {msg}</span>)}
+          {Object.values(fieldErrors).map((msg, i) => <span key={`f${i}`} className={styles.errorItem}>⚠ {msg}</span>)}
+        </div>
+      )}
+
       <div className={styles.body}>
         <div className={styles.palette}>
           <FieldPalette onAddField={(kind: FieldKind) => dispatch({ type: 'FIELD_ADD', kind })} />
@@ -90,6 +104,7 @@ export default function BuilderPage() {
         <BuilderCanvas
           schema={state.schema}
           selectedFieldId={state.selectedFieldId}
+          fieldErrors={fieldErrors}
           onSelectField={id => dispatch({ type: 'FIELD_SELECT', fieldId: id })}
           onDeleteField={id => dispatch({ type: 'FIELD_DELETE', fieldId: id })}
           onReorder={(from, to) => dispatch({ type: 'FIELD_REORDER', fromIndex: from, toIndex: to })}
