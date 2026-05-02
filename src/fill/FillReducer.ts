@@ -9,6 +9,7 @@ export interface FillState {
   values: Record<string, FieldValue>
   touched: Record<string, boolean>
   isSubmitted: boolean
+  readyToSave: boolean
   errors: Record<string, string>
   visibility: VisibilityState
   requiredOverrides: Record<string, boolean | null>
@@ -80,6 +81,7 @@ export function createInitialFillState(schema: FormSchema): FillState {
     values: engineValues,
     touched: {},
     isSubmitted: false,
+    readyToSave: false,
     errors: {},
     visibility,
     requiredOverrides,
@@ -112,11 +114,12 @@ export function fillReducer(state: FillState, action: FillAction): FillState {
 
     case 'SUBMIT_ATTEMPT': {
       const errors = validateAll(state.schema, state.values, state.visibility, state.requiredOverrides)
-      return { ...state, isSubmitted: true, errors }
+      const readyToSave = Object.keys(errors).length === 0
+      return { ...state, isSubmitted: true, readyToSave, errors }
     }
 
     case 'SUBMIT_SUCCESS': {
-      return { ...state, savedResponse: action.response }
+      return { ...state, readyToSave: false, savedResponse: action.response }
     }
 
     default:

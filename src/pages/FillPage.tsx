@@ -28,8 +28,7 @@ export default function FillPage() {
   }, [])
 
   useEffect(() => {
-    const hasErrors = Object.keys(state.errors).length > 0
-    if (state.isSubmitted && !hasErrors && !state.savedResponse && !hasSavedRef.current) {
+    if (state.readyToSave && !state.savedResponse && !hasSavedRef.current) {
       hasSavedRef.current = true
       const visibleFieldIds = state.schema.fields
         .filter(f => state.visibility[f.id] !== false)
@@ -52,7 +51,7 @@ export default function FillPage() {
       saveResponse(response)
       dispatch({ type: 'SUBMIT_SUCCESS', response })
     }
-  }, [state.isSubmitted, state.errors, state.savedResponse, state.schema, state.values, state.visibility])
+  }, [state.readyToSave, state.savedResponse, state.schema, state.values, state.visibility])
 
   if (!stored) {
     return (
