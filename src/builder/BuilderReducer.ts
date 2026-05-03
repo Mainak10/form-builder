@@ -26,6 +26,11 @@ function validateSchema(schema: FormSchema): SchemaError[] {
       errors.push({ fieldId: field.id, message: 'Select at least one source field for calculation' })
     }
   }
+  for (const [fieldId, rule] of Object.entries(schema.conditionalRules)) {
+    if (rule.conditions.some(c => !c.targetFieldId)) {
+      errors.push({ fieldId, message: 'Conditional rule has an incomplete condition — please select a field' })
+    }
+  }
   return errors
 }
 
@@ -121,14 +126,14 @@ export function builderReducer(state: BuilderState, action: BuilderAction): Buil
         conditionalRules: { ...state.schema.conditionalRules, [action.fieldId]: action.rule },
         updatedAt: new Date().toISOString(),
       }
-      return { ...state, schema, isDirty: true }
+      return { ...state, schema, isDirty: true, schemaErrors: validateSchema(schema) }
     }
 
     case 'RULE_DELETE': {
       const newRules = { ...state.schema.conditionalRules }
       delete newRules[action.fieldId]
       const schema = { ...state.schema, conditionalRules: newRules, updatedAt: new Date().toISOString() }
-      return { ...state, schema, isDirty: true }
+      return { ...state, schema, isDirty: true, schemaErrors: validateSchema(schema) }
     }
 
     case 'SAVE_SUCCESS': {
