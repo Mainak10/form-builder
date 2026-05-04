@@ -20,7 +20,8 @@ A browser-based form builder with no backend. You design forms, share them, coll
     - [7. Post-submit UX: success screen](#7-post-submit-ux-success-screen)
     - [8. Cascade delete: clean up conditions referencing deleted fields](#8-cascade-delete-clean-up-conditions-referencing-deleted-fields)
     - [9. Unsaved work protection in builder](#9-unsaved-work-protection-in-builder)
-    - [10. File uploads in PDF: filename + size](#10-file-uploads-in-pdf-filename--size)
+    - [10. Unique IDs for fields, templates, and responses](#10-unique-ids-for-fields-templates-and-responses)
+    - [11. File uploads in PDF: filename + size](#11-file-uploads-in-pdf-filename--size)
   - [Tech stack and why](#tech-stack-and-why)
 - [Design Patterns](#design-patterns)
   - [Component registry](#component-registry)
@@ -173,7 +174,31 @@ https://excalidraw.com/#json=wdQQ1WDZs4Qu1BXipF_44,O-h2c2ZxKlayvSOljXIf-w
 
 ---
 
-#### 10. File uploads in PDF: filename + size
+#### 10. Unique IDs for fields, templates, and responses
+
+**Spec gap:** The spec required fields, templates, and responses to be individually addressable but never specified how to generate stable unique identifiers for each, or why uniqueness matters beyond "don't collide."
+
+**Decision:** All three entity types get a prefixed timestamp + random suffix ID generated without any external library:
+
+| Entity   | Prefix   | Generated in                  | Example                     |
+| -------- | -------- | ----------------------------- | --------------------------- |
+| Field    | `field_` | `BuilderReducer.generateId()` | `field_1714812345678_x9k2m` |
+| Template | `tmpl_`  | `createInitialBuilderState()` | `tmpl_1714812345678_a3p7q`  |
+| Response | `resp_`  | `FillPage.generateId()`       | `resp_1714812345678_z1n4w`  |
+
+All three use the same formula: `prefix + Date.now() + '_' + Math.random().toString(36).slice(2, 7)` The 5-character base-36 random suffix makes same-millisecond collisions astronomically unlikely (~60 million combinations).
+
+**Why unique field IDs:** Field IDs are the foreign key throughout the entire schema. `conditionalRules` is keyed by `fieldId` for O(1) lookup. `FillState.values`, `touched`, and `errors` are all `Record<fieldId, …>` maps. Cascade delete — removing a field and cleaning up every rule that references it — only works because each field has a stable, unique ID that other parts of state can reference directly. Sequential indexes would break the moment any field is reordered or deleted.
+
+**Why unique template IDs:** Template IDs are the URL key. Routes `/builder/:templateId`, `/fill/:templateId`, and `/templates/:templateId/responses` all resolve to a specific localStorage entry by this ID. Without unique template IDs, sharing a link to a specific form — or navigating back to edit it — would be impossible.
+
+**Why unique response IDs:** Each response is stored as a value in a `Record<responseId, FormResponse>` map inside localStorage. Response IDs let the app retrieve, delete, or re-download any individual response as a PDF without scanning the entire response list.
+
+This can be handled by using external libraries like `uuid` or `crypto.randomUUID()` but since the spec mentioned No external dependency needed.
+
+---
+
+#### 11. File uploads in PDF: filename + size
 
 **Spec gap:** The spec said "PDF export should handle the fact that file contents cannot be embedded" but didn't say what to show instead.
 
