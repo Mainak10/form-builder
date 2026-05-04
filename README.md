@@ -2,6 +2,44 @@
 
 A browser-based form builder with no backend. You design forms, share them, collect responses, and export PDFs — everything runs in the browser and persists to `localStorage`.
 
+## Table of Contents
+
+- [How to Run](#how-to-run)
+- [Live Application](#live-application)
+- [Project Overview](#project-overview)
+  - [What it does](#what-it-does)
+  - [HLD Design](#hld-design)
+  - [LLD Design](#lld-design)
+  - [Unspecified Decisions](#unspecified-decisions)
+    - [1. Visual Layout of the application](#1-visual-layout-of-the-application)
+    - [2. Multi-condition AND vs OR logic](#2-multi-condition-and-vs-or-logic)
+    - [3. Default visibility when defaultVisible is not configured](#3-default-visibility-when-defaultvisible-is-not-configured)
+    - [4. Hidden source fields in calculations](#4-hidden-source-fields-in-calculations)
+    - [5. Form builder: minimum one field required to save](#5-form-builder-minimum-one-field-required-to-save)
+    - [6. Preview: conditional logic disabled](#6-preview-conditional-logic-disabled)
+    - [7. Post-submit UX: success screen](#7-post-submit-ux-success-screen)
+    - [8. Cascade delete: clean up conditions referencing deleted fields](#8-cascade-delete-clean-up-conditions-referencing-deleted-fields)
+    - [9. Unsaved work protection in builder](#9-unsaved-work-protection-in-builder)
+    - [10. File uploads in PDF: filename + size](#10-file-uploads-in-pdf-filename--size)
+  - [Tech stack and why](#tech-stack-and-why)
+- [Design Patterns](#design-patterns)
+  - [Component registry](#component-registry)
+  - [Discriminated unions for type safety](#discriminated-unions-for-type-safety)
+  - [Pure logic engines](#pure-logic-engines)
+  - [useReducer for state management](#usereducer-for-state-management)
+- [Deep Dive](#deep-dive)
+  - [How the form builder works](#how-the-form-builder-works)
+  - [How form filling and validation work](#how-form-filling-and-validation-work)
+  - [How conditional logic works](#how-conditional-logic-works)
+  - [How calculation fields work](#how-calculation-fields-work)
+  - [Data structures at a glance](#data-structures-at-a-glance)
+- [Adding a New Field Type](#adding-a-new-field-type)
+- [What We Didn't Build (Future Scope)](#what-we-didnt-build-future-scope)
+  - [Functional Requirements](#functional-requirements)
+  - [Stretched Scope / Non Functional Requirements](#streached-scope--non-functional-requirements)
+
+---
+
 ## How to Run
 
 ```bash
